@@ -52,4 +52,15 @@ public function deleteBooking($courseId)
     return response()->json(['message' => 'Booking deleted successfully']);
 }
 
+public function getUserProfile(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        return response()->json($user);
+    }
+
 }

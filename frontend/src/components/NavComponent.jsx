@@ -28,14 +28,14 @@ const NavComponent = () => {
           </li>
           {user?.role === "user" && (
             <li className="nav-item">
-              <Link className="nav-link active" to="/userdashboard">
+              <Link className="nav-link" to="/userdashboard">
                 Booked Courses
               </Link>
             </li>
           )}
           {user?.role === "admin" && (
             <li className="nav-item">
-              <Link className="nav-link active" to="/admindashboard">
+              <Link className="nav-link" to="/admindashboard">
                 Admin Dashboard
               </Link>
             </li>
@@ -52,23 +52,23 @@ const NavComponent = () => {
         </ul>
       </div>
       {user ? (
-        <>
-          <Link className="nav-link active" to="/profile">
-            {user.name}
-          </Link>
-          <img className="me-2" src={user.profile_image} alt="" style={{ height: "50px", width: "50px" }} />
-          <button className="btn btn-primary" onClick={logout}>
-            Logout
-          </button>
-        </>
+        user.role === "user" ? (
+          <>
+            <Link to="/profile">{user.name}</Link>
+            <img src={user.profile_image} alt="" style={{ height: "35px", width: "35px", borderRadius: "50%" }} />
+            <button onClick={logout}>Logout</button>
+          </>
+        ) : user.role === "admin" ? (
+          <>
+            <p>{user.name}</p>
+            <img src={user.profile_image} alt="" style={{ height: "50px", width: "50px" }} />
+            <button onClick={logout}>Logout</button>
+          </>
+        ) : null
       ) : (
         <>
-          <Link className="btn btn-primary me-2" to="/login">
-            Login
-          </Link>
-          <Link className="btn btn-primary" to="/register">
-            Register
-          </Link>
+          <Link to="/login">Login</Link>
+          <Link to="/register">Register</Link>
         </>
       )}
     </nav>

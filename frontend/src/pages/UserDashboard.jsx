@@ -33,33 +33,35 @@ const UserDashboard = () => {
 
   return (
     <div>
-      <h1>User Dashboard</h1>
       {error ? (
-        <p>Error fetching your courses.</p>
+        <h1>Error: unauthorized</h1>
       ) : (
-        <ul>
-          {courses.map((course) => (
-            <li key={course.id}>
-              <h2>{course.activity.name}</h2>
-              <p>
-                <strong>Description:</strong> {course.activity.description}
-              </p>
-              <p>
-                <strong>Room:</strong> {course.location}
-              </p>
-              <p>
-                <strong>Day:</strong> {course.slot.day}
-              </p>
-              <p>
-                <strong>Starts at:</strong> {course.slot.start_hour}
-              </p>
-              <p>
-                <strong>Status:</strong> {course.pivot.status}
-              </p>
-              <button onClick={() => handleDeleteBooking(course.id)}>Delete Booking</button>
-            </li>
-          ))}
-        </ul>
+        <>
+          <h1>Your courses</h1>
+          <ul>
+            {courses.map((course) => (
+              <li key={course.id}>
+                <h2>{course.activity.name}</h2>
+                <p>
+                  <strong>Description:</strong> {course.activity.description}
+                </p>
+                <p>
+                  <strong>Room:</strong> {course.location}
+                </p>
+                <p>
+                  <strong>Day:</strong> {course.slot.day}
+                </p>
+                <p>
+                  <strong>Starts at:</strong> {course.slot.start_hour}
+                </p>
+                <p>
+                  <strong>Status:</strong> {course.pivot.status}
+                </p>
+                <button onClick={() => handleDeleteBooking(course.id)}>Delete Booking</button>
+              </li>
+            ))}
+          </ul>
+        </>
       )}
     </div>
   );

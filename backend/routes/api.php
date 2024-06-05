@@ -12,6 +12,8 @@ use App\Http\Controllers\Api\CourseController;
 Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::middleware('auth:sanctum')->get('/user-profile', [UserController::class, 'getUserProfile']);
+
 
 Route::name('api.v1.')
     ->prefix('v1')

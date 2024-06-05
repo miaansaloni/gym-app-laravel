@@ -18,25 +18,31 @@ class AdminController extends Controller
         }
     
         $courses = Course::with(['users' => function ($query) {
-            $query->whereIn('course_user.status', ['pending', 'true'])
-                  ->select('users.id', 'users.name', 'course_user.status');
+            $query->select('users.id', 'users.name', 'course_user.course_id', 'course_user.status');
         }, 'activity', 'slot'])->get();
     
         return response()->json($courses);
     }
+    
 
 
     public function updateBookingStatus(Request $request, $courseId, $userId)
-{
-    if (Auth::user()->role !== 'admin') {
-        abort(401);
+    {
+        if (Auth::user()->role !== 'admin') {
+            abort(401);
+        }
+    
+        $status = $request->input('status');
+        if (!in_array($status, ['accepted', 'rejected'])) {
+            return response()->json(['message' => 'Invalid status'], 400);
+        }
+    
+        $user = User::findOrFail($userId);
+        $user->courses()->updateExistingPivot($courseId, ['status' => $status]);
+    
+        return response()->json(['message' => "Booking status updated to $status"]);
     }
-
-    $user = User::findOrFail($userId);
-    $user->courses()->updateExistingPivot($courseId, ['status' => 'accepted']);
-
-    return response()->json(['message' => 'Booking status updated to accepted']);
-}
+    
 
 
     public function createActivity(Request $request)

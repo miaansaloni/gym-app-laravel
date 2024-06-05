@@ -21,7 +21,9 @@ const AdminDashboard = () => {
 
   const handleAcceptBooking = async (courseId, userId) => {
     try {
-      const response = await axios.patch(`/api/v1/update-booking-status/${courseId}/${userId}`);
+      const response = await axios.patch(`/api/v1/update-booking-status/${courseId}/${userId}`, {
+        status: "accepted",
+      });
       console.log(response.data.message);
 
       setCourses((prevCourses) =>
@@ -69,43 +71,47 @@ const AdminDashboard = () => {
 
   return (
     <div>
-      <h1>Admin Dashboard</h1>
       {error ? (
-        <p>There was an error fetching the admin dashboard data.</p>
+        <h1>Error: unauthorized</h1>
       ) : (
-        <ul>
-          {courses.map((course) => (
-            <li key={course.id}>
-              <h2>{course.activity.name}</h2>
-              <p>
-                <strong>Description:</strong> {course.activity.description}
-              </p>
-              <p>
-                <strong>Room:</strong> {course.location}
-              </p>
-              <p>
-                <strong>Day:</strong> {course.slot.day}
-              </p>
-              <p>
-                <strong>Starts at:</strong> {course.slot.start_hour}
-              </p>
-              <ul>
-                {course.users.map((user) => (
-                  <li key={user.id}>
-                    <p>
-                      <strong>User Name:</strong> {user.name}
-                    </p>
-                    <p>
-                      <strong>Status:</strong> {user.pivot.status}
-                    </p>
-                    <button onClick={() => handleAcceptBooking(course.id, user.id)}>Accept Booking</button>
-                    <button onClick={() => handleRejectBooking(course.id, user.id)}>Reject Booking</button>{" "}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
+        <>
+          <h1>Admin Dashboard</h1>
+          <table>
+            <thead>
+              <tr>
+                <th>Course Name</th>
+                <th>Slot</th>
+                <th>User Name</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {courses.map((course) =>
+                course.users.map((user) => (
+                  <tr key={`${course.id}-${user.id}`}>
+                    <td>{course.activity.name}</td>
+                    <td>
+                      {course.slot.day} {course.slot.start_hour}
+                    </td>
+                    <td>{user.name}</td>
+                    <td>{user.pivot.status}</td>
+                    <td>
+                      {user.pivot.status === "pending" ? (
+                        <>
+                          <button onClick={() => handleAcceptBooking(course.id, user.id)}>Accept Booking</button>
+                          <button onClick={() => handleRejectBooking(course.id, user.id)}>Reject Booking</button>
+                        </>
+                      ) : (
+                        " "
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </>
       )}
     </div>
   );
